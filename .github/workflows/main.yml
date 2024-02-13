@@ -23,17 +23,17 @@ jobs:
           docker build --build-arg token=${{ secrets.Discord_Token}} -t ${{ secrets.DOCKER_HUB_USERNAME }}/Dail.:latest .
 
       - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/chatty:latest
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/Dail.:latest
 
       - name: Update image metadata
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKER_HUB_USERNAME }}/chatty:latest
+          images: ${{ secrets.DOCKER_HUB_USERNAME }}/Dail.:latest
           tags: |
             type=sha
           labels: |
             org.opencontainers.image.title=chatty 
-            org.opencontainers.image.description=chatty bot
+            org.opencontainers.image.description=Dail. bot
             org.opencontainers.image.url=https://github.com/${{github.repository}}
             org.opencontainers.image.revision=${{github.sha}}
             org.opencontainers.image.licenses=MIT
