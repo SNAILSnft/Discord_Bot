@@ -7,7 +7,7 @@ module.exports = [
     { name: "$stake", URL: "https://omniflix.tv/iv/657ccb6bd661a858ffc70aed" },
     // Leap Snaps on MetaMask
     { name: "can i use metamask", URL: "https://omniflix.tv/iv/657ccf58d661a858ffc71434" },
-    { name: "metamask", URL: "https://omniflix.tv/iv/657ccf58d661a858ffc71434" },
+    { name: "metamasked", URL: "https://omniflix.tv/iv/657ccf58d661a858ffc71434" },
     { name: "instead of keplr", URL: "https://omniflix.tv/iv/657ccf58d661a858ffc71434" },
     // Squid Router
     { name: "what is bridge", URL: "https://omniflix.tv/iv/657ccf08d661a858ffc712bb" },
