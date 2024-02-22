@@ -26,6 +26,7 @@ module.exports = [
     // DVPN Meile
     { name: "what vpn", URL: "https://omniflix.tv/iv/657cd383d661a858ffc71dec" },
     { name: "$meile", URL: "https://omniflix.tv/iv/657cd383d661a858ffc71dec" },  
+    { name: "$dvpn", URL: "https://omniflix.tv/iv/657cd383d661a858ffc71dec" },  
      // Stargaze Standard Collection
     { name: "how do i mint on stargaze", URL: "https://medium.com/@snailsnft/stargaze-creating-a-standard-collection-c2acf6076f67" },
     { name: "$stargazemint", URL: "https://medium.com/@snailsnft/stargaze-creating-a-standard-collection-c2acf6076f67" },  
