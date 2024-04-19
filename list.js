@@ -46,7 +46,7 @@ module.exports = [
     { name: "$dail", URL: "https://medium.com/@snailsnft/dail-discord-bot-0ba084ca0015" },  
     // The Future of the ATOM Economic Zone
     { name: "what the future for atom", URL: "https://medium.com/@snailsnft/dail-discord-bot-0ba084ca0015" },
-    { name: "$AEZ", URL: "https://medium.com/@snailsnft/the-future-of-the-atom-economic-zone-b3396347fb56" }, 
+    { name: "$aez", URL: "https://medium.com/@snailsnft/the-future-of-the-atom-economic-zone-b3396347fb56" }, 
     // Medium
     { name: "$medium", URL: "https://medium.com/@snailsnft/" }, 
     // OmniFlix
