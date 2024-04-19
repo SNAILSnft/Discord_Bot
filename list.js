@@ -35,4 +35,22 @@ module.exports = [
      // Validator Selection
     { name: "who do i stake with", URL: "https://omniflix.tv/iv/65ce2e4ec65a434875669e3d" },
     { name: "$validatorselection", URL: "https://omniflix.tv/iv/65ce2e4ec65a434875669e3d" },  
+    // Astrovault
+    { name: "what is astrovault", URL: "https://omniflix.tv/iv/6604486447ea52133bf72322" },
+    { name: "$astrovault", URL: "https://omniflix.tv/iv/6604486447ea52133bf72322" },  
+    // Amber
+    { name: "what is amber", URL: "https://omniflix.tv/iv/661479365e962db5dad46b4f" },
+    { name: "$amber", URL: "https://omniflix.tv/iv/661479365e962db5dad46b4f" },  
+    // Dail
+    { name: "who is dail", URL: "https://medium.com/@snailsnft/dail-discord-bot-0ba084ca0015" },
+    { name: "$dail", URL: "https://medium.com/@snailsnft/dail-discord-bot-0ba084ca0015" },  
+    // The Future of the ATOM Economic Zone
+    { name: "what the future for atom", URL: "https://medium.com/@snailsnft/dail-discord-bot-0ba084ca0015" },
+    { name: "$AEZ", URL: "https://medium.com/@snailsnft/the-future-of-the-atom-economic-zone-b3396347fb56" }, 
+    // Medium
+    { name: "$medium", URL: "https://medium.com/@snailsnft/" }, 
+    // OmniFlix
+    { name: "$omniflix: "https://omniflix.tv/channel/65182782e1c28773aa199c84" }, 
+    // YouTube
+    { name: "$youtube: "https://www.youtube.com/@SNAILS._/videos" },
 ];
