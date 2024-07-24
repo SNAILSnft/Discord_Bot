@@ -4,8 +4,8 @@
   "type": "commonjs",
   "main": "index.js",
   "dependencies": {
-    "discord.js": "^14.14.1",
-    "dotenv": "^16.3.1"
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5"
   },
   "scripts": {
     "start": "node index.js"
