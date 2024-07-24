@@ -50,7 +50,7 @@ module.exports = [
     // Medium
     { name: "$medium", URL: "https://medium.com/@snailsnft/" }, 
     // OmniFlix
-    { name: "$omniflix: "https://omniflix.tv/channel/65182782e1c28773aa199c84" }, 
+    { name: "$omniflix", URL: " https://omniflix.tv/channel/65182782e1c28773aa199c84" }, 
     // YouTube
-    { name: "$youtube: "https://www.youtube.com/@SNAILS._/videos" },
+    { name: "$youtube", URL: "https://www.youtube.com/@SNAILS._/videos" },
 ];
