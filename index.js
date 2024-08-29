@@ -25,77 +25,17 @@ const commands = [
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
-// Set this to false to use guild-specific commands, true for global commands
-const useGlobalCommands = false;
-
-async function removeGlobalCommands() {
+client.once('ready', async () => {
+  console.log('Bot is ready!');
   try {
-    console.log('Removing all global application (/) commands.');
-    await rest.put(
-      Routes.applicationCommands(client.user.id),
-      { body: [] }
-    );
-    console.log('Successfully removed all global application (/) commands.');
-  } catch (error) {
-    console.error('Error removing global commands:', error);
-  }
-}
-
-async function registerGlobalCommands() {
-  try {
-    console.log('Registering global application (/) commands.');
+    console.log('Registering slash commands.');
     await rest.put(
       Routes.applicationCommands(client.user.id),
       { body: commands }
     );
-    console.log('Successfully registered global application (/) commands.');
+    console.log('Slash commands registered successfully.');
   } catch (error) {
-    console.error('Error registering global commands:', error);
-  }
-}
-
-async function registerGuildCommands() {
-  try {
-    console.log('Registering guild-specific application (/) commands.');
-    const guilds = await client.guilds.fetch();
-    for (const [guildId, guild] of guilds) {
-      await rest.put(
-        Routes.applicationGuildCommands(client.user.id, guildId),
-        { body: commands }
-      );
-      console.log(`Successfully registered application (/) commands for guild ${guild.name} (${guildId}).`);
-    }
-    console.log('Finished registering guild-specific application (/) commands.');
-  } catch (error) {
-    console.error('Error registering guild commands:', error);
-  }
-}
-
-client.once('ready', async () => {
-  console.log('Bot is ready!');
-  
-  // Always remove global commands first
-  await removeGlobalCommands();
-  
-  if (useGlobalCommands) {
-    await registerGlobalCommands();
-  } else {
-    await registerGuildCommands();
-  }
-});
-
-client.on('guildCreate', async (guild) => {
-  if (!useGlobalCommands) {
-    console.log(`Joined new guild: ${guild.name} (${guild.id})`);
-    try {
-      await rest.put(
-        Routes.applicationGuildCommands(client.user.id, guild.id),
-        { body: commands }
-      );
-      console.log(`Successfully registered commands for new guild ${guild.name} (${guild.id}).`);
-    } catch (error) {
-      console.error(`Error registering commands for new guild ${guild.name} (${guild.id}):`, error);
-    }
+    console.error('Error registering slash commands:', error);
   }
 });
 
@@ -106,24 +46,11 @@ function searchObjects(query) {
 function getSocialLinks() {
   return [
     { name: 'Linktree', url: 'https://linktr.ee/snailsnft' },
-    // Add more social links here in the future, for example:
-    // { name: 'Twitter', url: 'https://twitter.com/youraccount' },
-    // { name: 'Instagram', url: 'https://instagram.com/youraccount' },
+    { name: 'Medium', url: 'https://medium.com/@snailsnft/' },
+    { name: 'OmniFlix', url: 'https://omniflix.tv/channel/65182782e1c28773aa199c84' },
+    { name: 'YouTube', url: 'https://www.youtube.com/@SNAILS._/videos' }
   ];
 }
-
-client.on("messageCreate", (message) => {
-  if (message.author.bot) return;
-
-  try {
-    let res = searchObjects(message.content);
-    if (res.length > 0 && res[0].URL) {
-      message.channel.send(res[0].URL);
-    }
-  } catch (error) {
-    console.error(`Error processing message: ${error}`);
-  }
-});
 
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
