@@ -35,7 +35,7 @@ const commands = [
     .setDescription('Get help with using the bot'),
   new SlashCommandBuilder()
     .setName('snails')
-    .setDescription('Get a random snail fact')
+    .setDescription('Get a random snail fact'),
 ];
 
 // Set up REST API instance
@@ -56,6 +56,7 @@ client.once('ready', async () => {
   }
 });
 
+
 // Handle interactions
 client.on('interactionCreate', async interaction => {
   if (!interaction.isCommand()) return;
@@ -63,33 +64,79 @@ client.on('interactionCreate', async interaction => {
   try {
     switch (interaction.commandName) {
       case 'help':
-        const helpMessage = `Available commands:
-        /help - Get help with using the bot
-        /snails - Get a random snail fact
-        /search - Search for an object
-        /socials - Get our social media links`;
+        const helpMessage = `
+**Available Commands:**
+
+**/help** - Get help with using the bot  
+**/snails** - Get a random snail fact  
+**/search** - Search for an object  
+**/socials** - Get our social media links  
+  `;
+
         await interaction.reply({
           content: helpMessage,
           flags: ['Ephemeral'] // Sends the help message as ephemeral (only the user sees it)
         });
         break;
-
       case 'snails':
-        // Handle the chuck command
+        // Handle the snails command
         await interaction.deferReply();
         try {
           // Get a random fact from the snailFacts array
           const randomFact = snailFacts[Math.floor(Math.random() * snailFacts.length)];
-          await interaction.editReply(randomFact);
+
+          // Create different variations of the response message
+          const messages = [
+            `🐌 did you know? ${randomFact}`,
+            `🐌 Here’s a cool snail fact: ${randomFact}`,
+            `🐌 Fun fact for you: ${randomFact}`,
+            `🐌 check out this snail fact: ${randomFact}`,
+          ];
+
+          // Pick a random message from the list
+          const selectedMessage = messages[Math.floor(Math.random() * messages.length)];
+
+          // Send the selected message
+          await interaction.editReply(selectedMessage);
         } catch (error) {
           console.error('Error fetching snail fact:', error);
+
+          // Send an error message if something goes wrong
           await interaction.followUp({
             content: "Sorry, I couldn't fetch a snail fact right now. Please try again later.",
-            flags: ['Ephemeral']
+            ephemeral: true // Ensures the error message is private
           });
         }
         break;
+      case 'socials':
+        // Handle the socials command
+        const socialLinks = [
+          { name: 'Linktree', url: 'https://linktr.ee/snailsnft', emoji: '🔗' },
+          { name: 'Medium', url: 'https://medium.com/@snailsnft/', emoji: '📝' },
+          { name: 'OmniFlix', url: 'https://omniflix.tv/snails', emoji: '📺' },
+          { name: 'YouTube', url: 'https://www.youtube.com/@SNAILS._/videos', emoji: '🎥' }
+        ];
 
+        // Create a row to hold the buttons
+        let row = new ActionRowBuilder();
+
+        // Loop through each social link and create a clickable button with emojis
+        socialLinks.forEach(link => {
+          row.addComponents(
+            new ButtonBuilder()
+              .setLabel(`${link.emoji} ${link.name}`) // Add emoji for better visual appeal
+              .setURL(link.url)
+              .setStyle(ButtonStyle.Link) // Ensures it's a clickable link button
+          );
+        });
+
+        // Send the reply with the buttons
+        await interaction.reply({
+          content: 'Check out our social media links below to stay connected with Snails!',
+          components: [row],
+          flags: 64  // Ephemeral flag, meaning only the user sees the message
+        });
+        break;
       case 'search':
         // Handle the search command
         const query = interaction.options.getString('query');
@@ -98,22 +145,28 @@ client.on('interactionCreate', async interaction => {
         let res = objects.filter(item => item.name.toLowerCase() === query.toLowerCase());
 
         if (res.length > 0) {
-          // If direct match is found, send URL
+          // If direct match is found, reply directly with the URL and thumbnail (if available)
           await interaction.reply({
-            content: `You selected: ${res[0].name}. Here's the link: ${res[0].URL}`,
+            content: `You selected: **${res[0].name}**.\n[Click here to visit](${res[0].URL})`,
+            embeds: [
+              {
+                title: res[0].name,
+                url: res[0].URL,
+                image: {
+                  url: res[0].thumbnail || '', // Show thumbnail if available
+                },
+              },
+            ],
             flags: 64 // Ephemeral flag
           });
           return;
         }
 
-        // Find if the query matches any options-based search
+        // If no direct match, find if the query matches any options-based search
         let optionsRes = options.find(item => item.name.toLowerCase() === query.toLowerCase());
 
         if (optionsRes) {
-          // Send buttons for the user to choose
-          let response = `Please choose an option from the list below:\n`;
-
-          // Create an ActionRowBuilder with ButtonBuilder components
+          // Show the buttons for the user to choose from
           const row = new ActionRowBuilder().addComponents(
             optionsRes.options.map((option, index) =>
               new ButtonBuilder()
@@ -123,9 +176,9 @@ client.on('interactionCreate', async interaction => {
             )
           );
 
-          // Send the options with buttons
+          // Send the options with buttons (no reply message here)
           const message = await interaction.reply({
-            content: response,
+            content: 'Please choose an option from the list below:',
             components: [row],
             flags: 64,  // Ephemeral flag
           });
@@ -141,37 +194,54 @@ client.on('interactionCreate', async interaction => {
             const buttonIndex = parseInt(i.customId.split('_')[1]) - 1;
             const selectedOption = optionsRes.options[buttonIndex];
 
-            // Respond with the selected option and its link
+            // Prepare the response after selection
+            let responseText = `You selected: **${selectedOption.name}**.`;
             if (selectedOption.URL) {
-              await i.reply({
-                content: `You selected: ${selectedOption.name}. Here's the link: ${selectedOption.URL}`,
-                flags: 64 // Ephemeral flag
-              });
+              responseText += `\n[Click here to visit](${selectedOption.URL})`;
             } else {
-              await i.reply({
-                content: `You selected: ${selectedOption.name}. No URL available.`,
-                flags: 64 // Ephemeral flag
-              });
+              responseText += `\nNo URL available.`;
             }
+
+            // Reply with the selected option's details and thumbnail (if available)
+            await i.reply({
+              content: responseText,
+              embeds: [
+                {
+                  title: selectedOption.name,
+                  url: selectedOption.URL,
+                  image: {
+                    url: selectedOption.thumbnail || '', // Show thumbnail if available
+                  },
+                },
+              ],
+              flags: 64 // Ephemeral flag
+            });
 
             // Disable the buttons after the user selects one
             const disabledRow = new ActionRowBuilder().addComponents(
               optionsRes.options.map((option, index) =>
                 new ButtonBuilder()
-                  .setCustomId(`disabled_${index + 1}`) // Ensure custom_id is still included
+                  .setCustomId(`disabled_${index + 1}`)
                   .setLabel('Option Disabled')
                   .setStyle(ButtonStyle.Secondary)
                   .setDisabled(true)
               )
             );
 
-            // Edit the original message with disabled buttons
+            // Edit the original message with disabled buttons (optional)
             await message.edit({
-              content: `You selected: ${selectedOption.name}. Here's the link: ${selectedOption.URL || 'No URL available.'}`,
+              content: 'You have selected an option.',
               components: [disabledRow],
             });
 
-            // Stop the collector right away after responding
+            // Delete the options message after the user selects an option
+            try {
+              await message.delete();
+            } catch (error) {
+              console.error('Error deleting message:', error);
+            }
+
+            // Stop the collector after responding
             collector.stop();
           });
 
@@ -182,9 +252,16 @@ client.on('interactionCreate', async interaction => {
                 content: timeoutMessage,
                 flags: 64  // Ephemeral flag
               });
+
+              // Delete the options message after timeout
+              try {
+                await message.delete();
+              } catch (error) {
+                console.error('Error deleting message:', error);
+              }
             }
 
-            // Only disable the buttons and update the message if no response was collected
+            // Disable the buttons and update the message if no response was collected
             if (reason === 'time') {
               const disabledRow = new ActionRowBuilder().addComponents(
                 optionsRes.options.map((option, index) =>
@@ -207,33 +284,13 @@ client.on('interactionCreate', async interaction => {
             }
           });
         } else {
+          // If no match was found in the list or options, reply that nothing was found
           await interaction.reply({
             content: `No matching object found for "${query}".`,
             flags: 64 // Ephemeral flag
           });
         }
         break;
-
-      case 'socials':
-        // Handle the socials command
-        const socialLinks = [
-          { name: 'Linktree', url: 'https://linktr.ee/snailsnft' },
-          { name: 'Medium', url: 'https://medium.com/@snailsnft/' },
-          { name: 'OmniFlix', url: 'https://omniflix.tv/channel/65182782e1c28773aa199c84' },
-          { name: 'YouTube', url: 'https://www.youtube.com/@SNAILS._/videos' }
-        ];
-
-        let response = 'Here are our social media links:\n';
-        socialLinks.forEach(link => {
-          response += `${link.name}: ${link.url}\n`;
-        });
-
-        await interaction.reply({
-          content: response,
-          flags: 64  // Ephemeral flag
-        });
-        break;
-
       default:
         break;
     }
