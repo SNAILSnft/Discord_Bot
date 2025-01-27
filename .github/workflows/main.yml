@@ -12,19 +12,24 @@ jobs:
 
     steps: 
       - uses: actions/checkout@v4
+      
+      # Log in to Docker Hub
       - name: Login to Dockerhub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
           
+      # Build and tag Docker image
       - name: Build and tag Docker image
         run: |
           docker build --build-arg token=${{ secrets.Discord_Token}} -t ${{ secrets.DOCKER_HUB_USERNAME }}/dail:latest .
 
+      # Push Docker image
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/dail:latest
 
+      # Update image metadata
       - name: Update image metadata
         uses: docker/metadata-action@v5
         with:
@@ -32,7 +37,7 @@ jobs:
           tags: |
             type=sha
           labels: |
-            org.opencontainers.image.title=chatty 
+            org.opencontainers.image.title=dail
             org.opencontainers.image.description=dail bot
             org.opencontainers.image.url=https://github.com/${{github.repository}}
             org.opencontainers.image.revision=${{github.sha}}
