@@ -1,21 +1,24 @@
-# Use the official Node.js 18.19.0 image based on Debian Bullseye slim
-FROM node:18.19.0-bullseye-slim
+# Use a specific Node.js Alpine base image for a smaller footprint
+FROM node:21.7.1-alpine
 
-# Set the working directory in the container
+# Set the working directory inside the container
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json (if available)
-COPY package*.json ./
+# Copy package.json and package-lock.json before copying the rest of the files
+# This ensures Docker's caching is more effective, as dependency installation will only rerun if these files change
+COPY package.json package-lock.json ./
 
-# Install dependencies
+# Install production dependencies
 RUN npm ci --only=production
 
-# Copy the rest of the application's code
+# Copy the rest of the application code
 COPY . .
 
-# Set the token as build argument and environment variable
-ARG token 
+# Pass a token as a build argument
+ARG token
+
+# Set the token as an environment variable
 ENV TOKEN=$token
 
-# Specify the command to run the application
+# Define the command to run the application
 CMD ["node", "index.js"]
